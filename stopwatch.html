@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>	Stopwatch</title>
+</head>
+
+<style>
+	*{
+		border: 0;
+		outline: 0;
+		font-family: Gotham, arial;
+
+	}
+
+	body{
+		text-align: center;
+		padding-top: 100px;
+		background: #f4f4f4;
+
+		color: #fff;
+	}
+
+	.main-container{
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-direction: column;
+	}
+
+	.main-container .container{
+		padding: 10px;
+		height: 100px;
+		width: 330px;
+		border-radius: 90px;
+		background: #f4f4f4;
+		box-shadow: 0 1px 15px 1px rgba(19, 19, 19, 0.1);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 5rem;
+		color: rgb(19, 19, 19);
+
+	}
+
+	.buttons{
+		margin-top: 40px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+
+	.btn{
+		background: dodgerblue;
+		color: #fff;
+		font-size: 1.4rem;
+		border-radius: 30px;
+		padding: 10px;
+		width: 140px;
+		margin-left: 20px;
+		text-align: center;
+	}
+
+	.counter{
+		width: 140px;
+	}
+
+	.progress-bar{
+		width: 0%;
+		border-radius: 5px;
+		background: dodgerblue;
+		height: 3px;
+		
+
+	}
+	.progress-container{
+		width: 300px;
+		border-radius: 5px;
+		border: 1px solid dodgerblue;
+		height: 3px;
+		margin-bottom: 20px;
+		transition: ease .25s;
+
+	}
+
+</style>
+<body>
+
+		<main class="main-container">
+
+			<div class="progress-container">
+				<div class="progress progress-bar"></div>
+			</div>
+				<div class="container">
+					<span class="counter-minutes counter">00</span>
+					:
+					<span class="counter-seconds counter">00</span>
+				</div>
+			<div class="buttons">
+				<button class="start-button btn">Start</button>
+				<button class="	reset-button btn">Reset</button>
+			</div>
+
+		</main>
+
+
+
+	<script>
+		// variables
+		let counterMinutesEl = document.querySelector('.counter-minutes');
+		let counterSecondsEl = document.querySelector('.counter-seconds');
+		let startButton = document.querySelector('.start-button');
+		let resetButton = document.querySelector('.reset-button');
+		let progressBar = document.querySelector('.progress');
+
+		let countSecs = 0;
+		let countMins = 0;
+		let intervalId;
+		let isPlaying = false;
+		
+
+		// Start stopwatch
+		startButton.addEventListener('click', () => {
+
+			if(!isPlaying){
+
+				intervalId = setInterval(function(){
+
+					setWatch(); // call timer function
+
+					updateHTML();
+
+				}, 1000);
+
+				startButton.innerHTML = 'Pause';
+
+				isPlaying = true;
+
+			} else {
+
+				clearInterval(intervalId);
+				isPlaying = false;
+				startButton.innerHTML = 'Play';
+			}
+
+		});
+
+		// Reset Stop watch
+		resetButton.addEventListener('click', () => {
+			countMins = 0;
+			countSecs = 0;
+			clearInterval(intervalId);
+			isPlaying = false;
+
+			updateHTML();
+
+			startButton.innerHTML = 'Start';
+			countMins = addZero(countMins);	
+			counterMinutesEl.innerHTML	=  countMins;
+			progressBar.style.width = 0;
+
+		});
+
+		// A function to add zero when minutes and seconds are less than zero
+		function addZero(zero){
+			if(zero < 10){
+				zero = '0' + zero;
+			}
+
+			return zero;
+		}
+
+		// Configure stop watch
+		function setWatch(){
+			if(countSecs < 60){
+
+				countSecs ++;
+				progressBar.style.width = `${(countSecs / 60) * 100}%`;
+
+			}else if(countSecs === 60) {
+
+				countSecs = 0;
+				progressBar.style.width = 0;
+				countSecs ++;
+				countMins ++;
+
+			    countMins = addZero(countMins);	
+				counterMinutesEl.innerHTML	=  countMins;
+			}
+		}
+
+		// Update HTML
+		function updateHTML(){
+			// Add string zero in front
+			countSecs = addZero(countSecs);	
+
+		  	// add to html
+			counterSecondsEl.innerHTML	=  countSecs;  
+		}
+
+	</script>
+</body>
+</html>
